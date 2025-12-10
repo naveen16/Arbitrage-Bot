@@ -435,6 +435,48 @@ client.watchContractEvent({
     }
   },
 });
+
+// Subscribe to V3 Swap events (real-time updates)
+client.watchContractEvent({
+  address: USDC_WETH_V3_POOL,
+  abi: UNISWAP_V3_POOL_ABI,
+  eventName: 'Swap',
+  onLogs: (logs) => {
+    for (const log of logs) {
+      const { sqrtPriceX96, tick } = log.args;
+      updateV3PoolState(USDC_WETH_V3_POOL, sqrtPriceX96, tick);
+      triggerOpportunityDetection();
+    }
+  },
+});
+
+// Subscribe to V3 Mint events (liquidity added)
+client.watchContractEvent({
+  address: USDC_WETH_V3_POOL,
+  abi: UNISWAP_V3_POOL_ABI,
+  eventName: 'Mint',
+  onLogs: (logs) => {
+    for (const log of logs) {
+      const { tickLower, tickUpper, amount } = log.args;
+      updateV3Liquidity(USDC_WETH_V3_POOL, tickLower, tickUpper, amount);
+      triggerOpportunityDetection();
+    }
+  },
+});
+
+// Subscribe to V3 Burn events (liquidity removed)
+client.watchContractEvent({
+  address: USDC_WETH_V3_POOL,
+  abi: UNISWAP_V3_POOL_ABI,
+  eventName: 'Burn',
+  onLogs: (logs) => {
+    for (const log of logs) {
+      const { tickLower, tickUpper, amount } = log.args;
+      updateV3Liquidity(USDC_WETH_V3_POOL, tickLower, tickUpper, -amount);
+      triggerOpportunityDetection();
+    }
+  },
+});
 ```
 
 **Key Point**: We're reading the **actual contract state** on Ethereum. This is the source of truth - the exact reserves that our swap would execute against.
