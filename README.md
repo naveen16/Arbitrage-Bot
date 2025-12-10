@@ -614,7 +614,7 @@ Let's walk through exactly what happens when we execute this arbitrage with $10K
 │    • new ETH reserve = k / 50,010,000 = 24,995.001 ETH                     │
 │    • ETH received = 25,000 - 24,995.001 = 4.999 ETH                        │
 │                                                                              │
-│    But wait! We need to account for the fee properly:                      │
+│    Account for fees:                                                       │
 │    • Formula: amountOut = (amountInWithFee × reserveOut) /                │
 │               (reserveIn + amountInWithFee)                                 │
 │    • ETH out = (9,970 × 25,000) / (50,000,000 + 9,970)                     │
